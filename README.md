@@ -33,4 +33,4 @@ Marketplace API
 
 > Deploy e build no Heroku
 
-### .Projeto seguindo padrão POO com classes e heranças, uso de Asyn/Await e conceitos do ECMA6.
+### *Projeto seguindo padrão POO com classes e heranças, uso de Asyn/Await e conceitos do ECMA6*
