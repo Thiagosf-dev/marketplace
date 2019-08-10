@@ -1,30 +1,34 @@
-const express = require("express");
-const routes = express.Router();
-const authMiddleware = require("./app/middlewares/auth");
+const express = require('express')
+const validate = require('express-validation')
+const handle = require('express-async-handler')
+const routes = express.Router()
 
-const controllers = require("./app/controllers");
+// importando os validadores
+const validators = require('./app/validators')
 
-routes.post("/users", controllers.UserController.store);
-routes.post("/sessions", controllers.SessionController.store);
+// importação dos controlles
+const controllers = require('./app/controllers')
+const authMiddleware = require('./app/middlewares/auth')
 
-/*
- * Rota para testa validação do token (pode ser deletado)
+// rotas não-autenticáveis
+routes.post('/sessions', validate(validators.Session), handle(controllers.SessionController.store))
+routes.post('/users', validate(validators.User), handle(controllers.UserController.store))
+
+// adiciona a validação de token para todas as rotas a partir da qui
+routes.use(authMiddleware)
+
+/**
+ * ADS
  */
-// routes.get("/teste", authMiddleware, (req, res) => res.json({ ok: true }));
+routes.get('/ads', handle(controllers.AdController.index))
+routes.get('/ads/:id', handle(controllers.AdController.show))
+routes.post('/ads', validate(validators.Ad), handle(controllers.AdController.store))
+routes.put('/ads/:id', validate(validators.Ad), handle(controllers.AdController.update))
+routes.delete('/ads/:id', handle(controllers.AdController.destroy))
 
-/*
- * Configura o express com um middleware para todas as rotas
- * A partir da qui, todas as rotas passam por esse middleware que valida o token
+/**
+ * PURCHASE
  */
-routes.use(authMiddleware);
+routes.post('/purchases', validate(validators.Purchase), handle(controllers.PurchaseController.store))
 
-/*
- * Rotas para o model Ad
- */
-routes.get("/ads", controllers.AdController.index);
-routes.get("/ads/:id", controllers.AdController.show);
-routes.post("/ads", controllers.AdController.store);
-routes.put("/ads/:id", controllers.AdController.update);
-routes.delete("/ads/:id", controllers.AdController.destroy);
-
-module.exports = routes;
+module.exports = routes
