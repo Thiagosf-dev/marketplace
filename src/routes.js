@@ -3,6 +3,10 @@ const validate = require('express-validation')
 const handle = require('express-async-handler')
 const routes = express.Router()
 
+routes.get('/teste', (req, res) => {
+  res.send('Bem-vindo')
+})
+
 // importando os validadores
 const validators = require('./app/validators')
 
